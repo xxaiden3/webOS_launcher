@@ -1,3 +1,4 @@
+<img width="1920" height="1080" alt="preview_v14" src="https://github.com/user-attachments/assets/ef33e7e8-2726-45da-a206-10695db70a6b" />
 # webOS Launcher (com.simple.launcher)
 
 A simple home screen / launcher app for LG webOS TVs. Tested on an LG 49LF630V (webOS 2.2.3).
