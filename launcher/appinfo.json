@@ -1,0 +1,11 @@
+{
+  "id": "com.yasin.launcher",
+  "version": "1.4.0",
+  "vendor": "Yasin",
+  "type": "web",
+  "main": "index.html",
+  "title": "Ana Ekran",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "bgColor": "#000000"
+}
