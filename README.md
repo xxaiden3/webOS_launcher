@@ -1,37 +1,37 @@
 # webOS Launcher (com.yasin.launcher)
 
-LG webOS TV'ler için sade bir ana ekran / başlatıcı uygulaması. LG 49LF630V (webOS 2.2.3) üzerinde test edildi.
+A simple home screen / launcher app for LG webOS TVs. Tested on an LG 49LF630V (webOS 2.2.3).
 
-## Özellikler
-- Saat, hava durumu (Open-Meteo, API anahtarı gerekmez)
-- Uygulama kısayolları (Netflix, YouTube, Prime Video, Tarayıcı, Canlı TV, LG Menü)
-- Wi-Fi ve Ayarlar kısayolları
-- Uzaktan kumanda ile gezinme
+## Features
+- Clock and weather (Open-Meteo, no API key required)
+- App shortcuts (Netflix, YouTube, Prime Video, Browser, Live TV, LG Home)
+- Wi-Fi and Settings shortcuts
+- Remote control navigation
 
-## Ayarlar
-Uygulama listesini, saat formatını ve şehri `launcher/config.js` dosyasından değiştirebilirsin.
+## Configuration
+Edit `launcher/config.js` to change the app list, the clock format (24h/12h) and the weather city.
 
-## Kurulum
-`.ipk` dosyasını [Releases](../../releases) sayfasından indir ve TV'ye yükle:
+## Installation
+Download the `.ipk` file from the [Releases](../../releases) page and install it on your TV:
 
 ```bash
-# Developer Mode açık ve TV `ares-setup-device` ile tanıtılmış olmalı
+# Developer Mode must be enabled and the TV registered with `ares-setup-device`
 ares-install --device tv com_yasin_launcher_1_4_0_all.ipk
 ares-launch  --device tv com.yasin.launcher
 ```
 
-## Paketleme (kaynaktan .ipk üretme)
+## Building the .ipk from source
 ```bash
 ares-package launcher
 ```
 
-## Dosya yapısı
+## Project structure
 ```
 launcher/
-  appinfo.json   uygulama bilgileri
-  index.html     arayüz
-  app.js         mantık
-  style.css      stil
-  config.js      kullanıcı ayarları
-  *.png, bg.jpg  görseller
+  appinfo.json   app metadata
+  index.html     UI
+  app.js         logic
+  style.css      styles
+  config.js      user settings
+  *.png, bg.jpg  images
 ```
