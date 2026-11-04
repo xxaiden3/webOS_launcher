@@ -1,4 +1,4 @@
-# webOS Launcher (com.yasin.launcher)
+# webOS Launcher (com.simple.launcher)
 
 A simple home screen / launcher app for LG webOS TVs. Tested on an LG 49LF630V (webOS 2.2.3).
 
@@ -8,6 +8,12 @@ A simple home screen / launcher app for LG webOS TVs. Tested on an LG 49LF630V (
 - Wi-Fi and Settings shortcuts
 - Remote control navigation
 
+## Compatibility
+Written in plain ES5 JavaScript and basic CSS (no flex/grid/CSS variables) so it runs on the old Chromium 34 web engine of webOS 2.x. Newer webOS versions ship newer engines, so the launcher is intended to work on all webOS TV versions.
+
+- Tested on: LG 49LF630V, webOS 2.2.3
+- Other webOS versions: expected to work, but not tested yet. Feedback is welcome via Issues.
+
 ## Configuration
 Edit `launcher/config.js` to change the app list, the clock format (24h/12h) and the weather city.
 
@@ -16,8 +22,8 @@ Download the `.ipk` file from the [Releases](../../releases) page and install it
 
 ```bash
 # Developer Mode must be enabled and the TV registered with `ares-setup-device`
-ares-install --device tv com_yasin_launcher_1_4_0_all.ipk
-ares-launch  --device tv com.yasin.launcher
+ares-install --device tv webos_launcher.ipk
+ares-launch  --device tv com.simple.launcher
 ```
 
 ## Building the .ipk from source
