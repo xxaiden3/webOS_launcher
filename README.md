@@ -1,4 +1,4 @@
-# webos_launcher
+# webos_launcher 2.0
 
 A clean, Apple TV–style home screen for **LG webOS TVs**, installed through Developer Mode.
 Built with plain ES5 JavaScript (no frameworks), so it runs on old and new webOS versions.
@@ -23,6 +23,20 @@ Developed and tested on an LG OLED55A16LA (webOS 6.x).
 |---|---|---|
 | ![All apps](docs/all-apps.png) | ![Menu](docs/app-menu.png) | ![Control panel](docs/control-panel.png) |
 
+## Compatibility
+
+| webOS version | Status |
+|---|---|
+| **webOS 6.x** (2021 models, e.g. OLED55A16LA) | Tested, all features work |
+| **webOS 3.x** (2016 models, e.g. 49LF630V) | An earlier version of the launcher (dock, clock, weather, reordering) ran on it; the newer *All apps* grid has **not** been tested there |
+| webOS 4.x / 5.x | Not tested. Expected to work (plain ES5 + CSS, no frameworks) |
+| webOS 22 / 23 / 24 and newer | Not tested. Expected to work, but the *All apps* list depends on what the TV allows and may fall back to the built-in list |
+
+The app targets the TV's built-in browser engine (written for old Chromium ~34 as well as new ones).
+Developer Mode and `ares-cli` are required on every version. The *All apps* list depends on what your
+TV allows (see "How the app list works"), so results can differ between versions.
+If you test it on another version, please open an issue and tell me what works.
+
 ## Requirements
 
 - An LG webOS TV with **Developer Mode** enabled ([guide](https://webostv.developer.lge.com/develop/getting-started/developer-mode-app))
@@ -30,6 +44,15 @@ Developed and tested on an LG OLED55A16LA (webOS 6.x).
   `ares-setup-device`
 
 ## Install
+
+Download the `.ipk` from the **Releases** page (or build it yourself below), then:
+
+```bash
+ares-install -d tv com.custom.launcher_2.8.0_all.ipk
+ares-launch  -d tv com.custom.launcher
+```
+
+### Build from source
 
 ```bash
 # build the package (the launcher app + its small helper service)
@@ -102,6 +125,12 @@ The launcher makes these requests, and nothing else:
 - `api.open-meteo.com` (fallback `wttr.in`) – current weather for that city
 
 No analytics. Set `weather: null` in `config.js` to disable weather and location entirely.
+
+## Wallpapers
+
+The included wallpapers are only examples. Put your own 1920x1080 JPG images into
+`com.custom.launcher/wallpapers/`, list them in `config.js` under `wallpapers`, and make sure you
+have the right to use them.
 
 ## Project structure
 
