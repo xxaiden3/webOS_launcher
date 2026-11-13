@@ -1,0 +1,6 @@
+{
+  "name": "com.custom.launcher.service",
+  "version": "1.0.0",
+  "description": "Launcher memory info service",
+  "main": "service.js"
+}

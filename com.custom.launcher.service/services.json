@@ -1,0 +1,14 @@
+{
+  "id": "com.custom.launcher.service",
+  "description": "Launcher memory info service",
+  "services": [
+    {
+      "name": "com.custom.launcher.service",
+      "description": "Launcher memory info service",
+      "commands": [
+        { "name": "getMemory", "description": "Returns system memory totals from /proc/meminfo" },
+        { "name": "listApps", "description": "Lists installed apps via applicationManager" }
+      ]
+    }
+  ]
+}

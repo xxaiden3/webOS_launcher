@@ -1,0 +1,17 @@
+{
+  "id": "com.custom.launcher",
+  "version": "2.8.0",
+  "vendor": "webos_launcher",
+  "type": "web",
+  "main": "index.html",
+  "title": "Home",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "bgColor": "#000000",
+  "resolution": "1920x1080",
+  "disableBackHistoryAPI": true,
+  "requiredPermissions": [
+    "memorymanager.query",
+    "network.query"
+  ]
+}

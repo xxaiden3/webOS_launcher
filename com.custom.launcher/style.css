@@ -1,0 +1,603 @@
+/* For old webOS (Chromium ~34): no flex/grid/CSS variables, sizes are vw-based */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #05070b;
+  color: #fff;
+  font-family: "LG Smart UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Background: bg.jpg is shown if present, otherwise a dark base remains */
+#bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #0b1018 url(bg.jpg) center center no-repeat;
+  background-size: cover;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Second background layer: the next image of the slideshow fades in on top of this one */
+#bg2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #0b1018 center center no-repeat;
+  background-size: cover;
+  opacity: 0;
+  -webkit-transition: opacity 4s;
+  transition: opacity 4s;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Darkens the top and bottom edges so text stays readable */
+#shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.7) 100%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+/* Top left: small clock, date, weather */
+#info {
+  position: absolute;
+  top: 5%;
+  left: 3.5%;
+  text-shadow: 0 0.05vw 0.2vw rgba(0, 0, 0, 0.55), 0 0.1vw 0.9vw rgba(0, 0, 0, 0.8);
+}
+
+#clock {
+  font-size: 5.4vw;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: 0.1vw;
+}
+
+#date {
+  margin-top: 0.7vw;
+  font-size: 1.5vw;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+#weather {
+  margin-top: 0.35vw;
+  font-size: 1.5vw;
+  color: rgba(255, 255, 255, 0.78);
+  display: none;
+}
+
+/* Top right: input and settings buttons.
+   Each button is positioned on its own, relative to the screen edge
+   (not tied to a wrapper box or a "right" calculation). */
+.topbtn {
+  position: absolute;
+  top: 3vw;
+  width: 3.6vw;
+  height: 3.6vw;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.35);
+  -webkit-transition: -webkit-transform 0.15s;
+  transition: transform 0.15s;
+}
+
+#wifi { left: 88.8vw; }
+#settings { left: 93.4vw; }
+
+.topbtn svg {
+  position: absolute;
+  top: 0.85vw;
+  left: 0.85vw;
+  width: 1.9vw;
+  height: 1.9vw;
+}
+
+.topbtn.focused {
+  background: rgba(255, 255, 255, 0.25);
+  -webkit-transform: scale(1.12);
+  transform: scale(1.12);
+  box-shadow: 0 0 0 0.2vw #fff;
+}
+
+/* Bottom: app row (Apple TV style: wide tiles, the focused one grows and glows) */
+#dock {
+  position: absolute;
+  left: 2.5%;
+  right: 2.5%;
+  bottom: 4%;
+  height: 16vw;
+  overflow: hidden;
+}
+
+#track {
+  position: absolute;
+  top: 2.4vw;
+  left: 0;
+  white-space: nowrap;
+  -webkit-transition: -webkit-transform 0.25s;
+  transition: transform 0.25s;
+  will-change: transform;
+}
+
+.tile {
+  display: inline-block;
+  width: 14vw;
+  margin: 0 1vw;
+  text-align: center;
+  vertical-align: top;
+  white-space: normal;
+}
+
+.tile .icon {
+  position: relative;
+  overflow: hidden;
+  width: 14vw;
+  height: 7.9vw;
+  line-height: 7.9vw;
+  border-radius: 1.1vw;
+  font-size: 3vw;
+  font-weight: 300;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0.4vw 1.2vw rgba(0, 0, 0, 0.35);
+  -webkit-transition: -webkit-transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tile .icon img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: none;
+}
+
+/* Diagonal light reflection: only visible on the focused tile */
+.tile .icon:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  background: -webkit-linear-gradient(top left, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 55%);
+  background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 55%);
+  -webkit-transition: opacity 0.2s;
+  transition: opacity 0.2s;
+}
+
+/* The label is only visible under the focused tile */
+.tile .label {
+  margin-top: 1.5vw;
+  font-size: 1.5vw;
+  color: #fff;
+  opacity: 0;
+  text-shadow: 0 0.1vw 0.5vw rgba(0, 0, 0, 0.8);
+  -webkit-transition: opacity 0.2s;
+  transition: opacity 0.2s;
+}
+
+.tile.focused .icon {
+  -webkit-transform: scale(1.14);
+  transform: scale(1.14);
+  box-shadow: 0 1.2vw 2.6vw rgba(0, 0, 0, 0.6);
+}
+
+.tile.focused .icon:after {
+  opacity: 1;
+}
+
+.tile.focused .label {
+  opacity: 1;
+}
+
+#toast {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: 2.5%;
+  padding: 0.8vw 1.6vw;
+  text-align: center;
+  font-size: 1.7vw;
+  color: #ffe9a8;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 0.8vw;
+  display: none;
+}
+
+/* ---- Variant B: Liquid Glass ---- */
+.tile .icon {
+  background: rgba(255, 255, 255, 0.13);
+  -webkit-backdrop-filter: blur(1.3vw) saturate(1.7);
+  backdrop-filter: blur(1.3vw) saturate(1.7);
+  border: 0.08vw solid rgba(255, 255, 255, 0.26);
+  box-sizing: border-box;
+  box-shadow: inset 0 0.12vw 0.25vw rgba(255, 255, 255, 0.45), inset 0 -0.15vw 0.4vw rgba(255, 255, 255, 0.08), 0 0.5vw 1.4vw rgba(0, 0, 0, 0.28);
+  color: rgba(255, 255, 255, 0.92);
+}
+.tile .icon:after {
+  opacity: 1;
+  background: -webkit-linear-gradient(top, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.04) 42%, rgba(255,255,255,0) 100%);
+  background: linear-gradient(to bottom, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.04) 42%, rgba(255,255,255,0) 100%);
+}
+.tile .label { opacity: 0.62; }
+.tile.focused .icon {
+  background: rgba(255, 255, 255, 0.24);
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 0.16vw rgba(255,255,255,0.9), inset 0 0.14vw 0.3vw rgba(255, 255, 255, 0.6), 0 1.2vw 2.6vw rgba(0, 0, 0, 0.45);
+}
+.tile.focused .label { opacity: 1; }
+.topbtn {
+  background: rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: blur(1vw) saturate(1.6);
+  backdrop-filter: blur(1vw) saturate(1.6);
+  border: 0.08vw solid rgba(255, 255, 255, 0.26);
+  box-sizing: border-box;
+  box-shadow: inset 0 0.1vw 0.2vw rgba(255, 255, 255, 0.4);
+}
+.topbtn.focused { background: rgba(255,255,255,0.3); }
+
+/* ---- Input button + picker panel ---- */
+#inputbtn { left: 88.8vw; }
+
+#panel {
+  position: absolute;
+  left: 79.6vw;
+  top: 7.6vw;
+  width: 17.4vw;
+  padding: 0.9vw;
+  display: none;
+  box-sizing: border-box;
+  border-radius: 1.6vw;
+  background: rgba(255, 255, 255, 0.16);
+  -webkit-backdrop-filter: blur(1.6vw) saturate(1.7);
+  backdrop-filter: blur(1.6vw) saturate(1.7);
+  border: 0.08vw solid rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 0.12vw 0.25vw rgba(255, 255, 255, 0.45), 0 1.2vw 3vw rgba(0, 0, 0, 0.45);
+  text-shadow: 0 0.1vw 0.5vw rgba(0, 0, 0, 0.6);
+}
+#ptitle {
+  padding: 0.3vw 0.9vw 0.8vw;
+  font-size: 1.2vw;
+  letter-spacing: 0.08vw;
+  color: rgba(255, 255, 255, 0.7);
+}
+.pitem {
+  margin-top: 0.4vw;
+  padding: 0 1.1vw;
+  height: 3.4vw;
+  line-height: 3.4vw;
+  border-radius: 1vw;
+  font-size: 1.6vw;
+  color: rgba(255, 255, 255, 0.92);
+  border: 0.08vw solid transparent;
+  box-sizing: border-box;
+}
+.pitem.focused {
+  background: rgba(255, 255, 255, 0.26);
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: inset 0 0.1vw 0.25vw rgba(255, 255, 255, 0.5);
+}
+
+
+/* ================= PERFORMANCE MODE (v1.7.1) =================
+   Live backdrop-filter and shadows that change during transitions were removed.
+   The glass look is imitated with a semi-transparent layer + bright edges.
+   Animations only use transform and opacity (GPU).                        */
+
+.tile .icon {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: rgba(34, 44, 60, 0.42);
+  border: 0.08vw solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 0.5vw 1.1vw rgba(0, 0, 0, 0.28);
+  -webkit-transition: -webkit-transform 0.18s;
+  transition: transform 0.18s;
+  will-change: transform;
+}
+/* ust parlak yansima: odakta yogunlasir (sadece opacity animasyonu) */
+.tile .icon:after {
+  opacity: 0.55;
+  background: -webkit-linear-gradient(top, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 45%, rgba(255,255,255,0.10) 100%);
+  background: linear-gradient(to bottom, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 45%, rgba(255,255,255,0.10) 100%);
+  -webkit-transition: opacity 0.18s;
+  transition: opacity 0.18s;
+}
+/* odak halkasi: box-shadow yerine opacity ile */
+.tile .icon:before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 2;
+  box-sizing: border-box;
+  border: 0.18vw solid #fff;
+  border-radius: 1.1vw;
+  opacity: 0;
+  -webkit-transition: opacity 0.15s;
+  transition: opacity 0.15s;
+}
+.tile.focused .icon {
+  background: rgba(34, 44, 60, 0.42);
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 0.5vw 1.1vw rgba(0, 0, 0, 0.28);
+  -webkit-transform: scale(1.14);
+  transform: scale(1.14);
+}
+.tile.focused .icon:after { opacity: 1; }
+.tile.focused .icon:before { opacity: 1; }
+.tile .label { text-shadow: none; }
+
+.topbtn {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: rgba(34, 44, 60, 0.42);
+  box-shadow: none;
+}
+.topbtn:after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  box-sizing: border-box;
+  border: 0.18vw solid #fff;
+  border-radius: 50%;
+  opacity: 0;
+  -webkit-transition: opacity 0.15s;
+  transition: opacity 0.15s;
+}
+.topbtn.focused { background: rgba(34, 44, 60, 0.42); box-shadow: none; }
+.topbtn.focused:after { opacity: 1; }
+
+/* Input panel: short-lived and small, so live blur can stay here */
+#panel { background: rgba(44, 56, 74, 0.55); }
+
+/* when blur: true is set in config.js */
+.blur .tile .icon, .blur .topbtn {
+  -webkit-backdrop-filter: blur(1.3vw) saturate(1.7);
+  backdrop-filter: blur(1.3vw) saturate(1.7);
+}
+
+/* ===== v1.8.0: white logos on glass tiles ===== */
+.tile .icon img { opacity: 1; }
+
+
+/* ===== v2.0.0: control panel ===== */
+#ctrl {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  display: none;
+  z-index: 20;
+  background: rgba(6, 8, 12, 0.62);
+}
+#cgrid {
+  position: absolute;
+  left: 62.4vw;
+  top: 7.6vw;
+  width: 34.6vw;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+.citem {
+  position: relative;
+  width: 16.9vw;
+  height: 6vw;
+  margin-bottom: 1vw;
+  padding: 0 1.5vw;
+  box-sizing: border-box;
+  border-radius: 3vw;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  color: #fff;
+  background: rgba(30, 36, 46, 0.7);
+  border: 0.1vw solid rgba(255, 255, 255, 0.28);
+  -webkit-transition: -webkit-transform 0.15s;
+  transition: transform 0.15s;
+}
+.citem.focused {
+  color: #14171c;
+  background: rgba(255, 255, 255, 0.96);
+  border-color: #fff;
+  -webkit-transform: scale(1.04);
+  transform: scale(1.04);
+}
+.cicon { width: 2.6vw; height: 2.6vw; margin-right: 1.1vw; color: #fff; -webkit-flex: none; flex: none; }
+.cicon svg { width: 100%; height: 100%; display: block; }
+.citem.focused .cicon { color: #0a84ff; }
+.ctext { -webkit-flex: 1; flex: 1; min-width: 0; }
+.ctitle, .csub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ctitle { font-size: 1.5vw; font-weight: 600; }
+.csub { font-size: 1.2vw; margin-top: 0.15vw; opacity: 0.72; }
+.cbar { display: none; height: 0.32vw; margin-top: 0.45vw; border-radius: 0.2vw; overflow: hidden; background: rgba(255, 255, 255, 0.28); }
+.citem.focused .cbar { background: rgba(0, 0, 0, 0.16); }
+.cfill { height: 100%; width: 0; background: #fff; }
+.citem.focused .cfill { background: #14171c; }
+
+/* ===== v2.3.0: reordering (edit mode) ===== */
+@-webkit-keyframes editpulse { 0% { opacity: 1; } 50% { opacity: 0.35; } 100% { opacity: 1; } }
+@keyframes editpulse { 0% { opacity: 1; } 50% { opacity: 0.35; } 100% { opacity: 1; } }
+.tile.editing .icon {
+  -webkit-transform: scale(1.2);
+  transform: scale(1.2);
+}
+.tile.editing .icon:before {
+  border-color: #ffd24a;
+  -webkit-animation: editpulse 1s infinite;
+  animation: editpulse 1s infinite;
+}
+.tile.editing .label { color: #ffd24a; }
+
+/* v2.4.0: padding at both ends of the row so the growing yellow ring of edge tiles is not clipped */
+#track { padding: 0 1.4vw; }
+
+/* remove confirmation: ring and text turn red */
+.tile.deleting .icon:before { border-color: #ff5a5a; }
+.tile.deleting .label { color: #ff8a8a; }
+
+/* ===== v2.5.0: All apps (grid that slides in from below) ===== */
+/* The home screen and the grid live in one "slider": pressing down moves the slider up by 100%. */
+#slider {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  -webkit-transition: -webkit-transform 0.5s cubic-bezier(0.3, 0.1, 0.2, 1);
+  transition: transform 0.5s cubic-bezier(0.3, 0.1, 0.2, 1);
+}
+/* dims the wallpaper while the grid is open (readability) */
+#gdim {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #05080d;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+#more {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 1vw;
+  text-align: center;
+  font-size: 1vw;
+  letter-spacing: 0.12vw;
+  color: rgba(255, 255, 255, 0.4);
+}
+#allapps {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  height: 100%;
+}
+#gtitle {
+  position: absolute;
+  left: 3.5vw;
+  top: 3vw;
+  font-size: 2.6vw;
+  font-weight: 300;
+  color: #fff;
+}
+#gstatus {
+  position: absolute;
+  left: 3.55vw;
+  top: 6.7vw;
+  font-size: 1.2vw;
+  color: rgba(255, 255, 255, 0.6);
+}
+#gwrap {
+  position: absolute;
+  left: 9.5vw;
+  top: 9.6vw;
+  width: 81vw;
+  bottom: 3.8vw;
+  overflow: hidden;
+}
+#gtrack {
+  padding-top: 1.4vw;
+  white-space: normal;
+  -webkit-transition: -webkit-transform 0.3s;
+  transition: transform 0.3s;
+}
+#gtrack .tile { margin-bottom: 1.5vw; }
+#ghint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 1.3vw;
+  text-align: center;
+  font-size: 1.1vw;
+  color: rgba(255, 255, 255, 0.5);
+}
+/* the TV's own icons are square: shown small in the middle of the tile */
+.tile .icon img.rawicon {
+  top: 14%;
+  left: 32%;
+  width: 36%;
+  height: 72%;
+}
+.gbadge {
+  display: none;
+  position: absolute;
+  top: 0.5vw;
+  right: 0.5vw;
+  z-index: 3;
+  padding: 0.1vw 0.6vw;
+  border-radius: 0.6vw;
+  font-size: 0.95vw;
+  line-height: 1.5vw;
+  background: #ff4d4d;
+  color: #fff;
+}
+.tile.isnew .gbadge { display: block; }
+.gpin {
+  display: none;
+  position: absolute;
+  top: 0.5vw;
+  left: 0.5vw;
+  z-index: 3;
+  width: 1.5vw;
+  height: 1.5vw;
+  border-radius: 50%;
+  line-height: 1.5vw;
+  font-size: 1vw;
+  font-weight: 700;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.92);
+  color: #111;
+}
+.tile.pinned .gpin { display: block; }
+
+/* Long-press menu */
+#gmenu {
+  display: none;
+  position: fixed;
+  z-index: 50;
+  left: 50%;
+  top: 50%;
+  width: 26vw;
+  margin-left: -13vw;
+  margin-top: -9vw;
+  padding: 1.6vw;
+  border-radius: 1.4vw;
+  background: rgba(20, 22, 28, 0.92);
+  box-shadow: 0 1vw 4vw rgba(0, 0, 0, 0.6);
+  color: #fff;
+  text-align: center;
+}
+#gmenu .gmt { font-size: 1.7vw; margin-bottom: 1vw; }
+#gmenu .gms { font-size: 1.2vw; color: #bbb; margin-bottom: 0.8vw; }
+#gmenu .gmi {
+  margin-top: 0.6vw;
+  padding: 0.8vw 0;
+  border-radius: 0.8vw;
+  font-size: 1.5vw;
+  background: rgba(255, 255, 255, 0.08);
+}
+#gmenu .gmi.on { background: rgba(255, 255, 255, 0.9); color: #111; }
+#gmenu .gmi.danger.on { background: #e5484d; color: #fff; }
